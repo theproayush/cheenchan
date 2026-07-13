@@ -383,7 +383,30 @@
   }
   document.getElementById('bigHeart').addEventListener('click', e=>{
     spawnHearts(e.clientX, e.clientY, 8);
+    notify('heart');
   });
+
+  // ----- secret notifications to Ayush via ntfy.sh -----
+  const NTFY_TOPIC = 'cheens-love-93e38110';
+  const tapCounts = { heart: 0, hug: 0 };
+  let notifyTimer = null;
+  function notify(kind){
+    tapCounts[kind]++;
+    clearTimeout(notifyTimer);
+    // wait until she stops tapping for 4s, then send one summary ping
+    notifyTimer = setTimeout(()=>{
+      const parts = [];
+      if(tapCounts.heart) parts.push('tapped the heart ' + tapCounts.heart + 'x \u2764\uFE0F');
+      if(tapCounts.hug) parts.push('sent ' + tapCounts.hug + ' hug' + (tapCounts.hug>1?'s':'') + ' \uD83E\uDD17');
+      const msg = 'Cheens ' + parts.join(' and ') + '!';
+      tapCounts.heart = 0; tapCounts.hug = 0;
+      fetch('https://ntfy.sh/' + NTFY_TOPIC, {
+        method: 'POST',
+        body: msg,
+        headers: { 'Title': 'She is on the website \uD83D\uDC95', 'Tags': 'heart' }
+      }).catch(()=>{});
+    }, 4000);
+  }
 
   // ----- flip notes -----
   document.querySelectorAll('.note').forEach(note=>{
@@ -414,6 +437,7 @@
   let hugs = 0;
   document.getElementById('hugBtn').addEventListener('click', e=>{
     hugs++;
+    notify('hug');
     document.getElementById('hugCount').textContent = hugMsgs[Math.min(hugs-1, hugMsgs.length-1)];
     spawnHearts(e.clientX, e.clientY, 10);
   });
