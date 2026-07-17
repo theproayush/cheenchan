@@ -399,9 +399,9 @@
 <!-- ===== SOMETHING SPECIAL PAGE ===== -->
 <div id="specialPage" aria-hidden="true">
   <div class="sp-locked" id="spLocked">
-    <div class="sp-eyebrow">here is my D for uuuuuu</div>
-    <button class="sp-seal" id="spSeal" aria-label="Tap to reveal">🍌</button>
-    <div class="sp-hint">Tap it to wrap your lips around my dick, and Suck it</div>
+    <div class="sp-eyebrow">For you my love</div>
+    <button class="sp-seal" id="spSeal" aria-label="Tap to reveal">❤️</button>
+    <div class="sp-hint">tap the heart to unlock</div>
   </div>
 </div>
 
@@ -469,7 +469,7 @@
       if(tapCounts.heart) parts.push('tapped the heart ' + tapCounts.heart + 'x ❤️');
       if(tapCounts.hug) parts.push('sent ' + tapCounts.hug + ' hug' + (tapCounts.hug>1?'s':'') + ' \uD83E\uDD17');
       if(tapCounts.kiss) parts.push('blew ' + tapCounts.kiss + ' kiss' + (tapCounts.kiss>1?'es':'') + ' \uD83D\uDC8B');
-      if(tapCounts.special) parts.push('opened Something Special \uD83D\uDE09');
+      if(tapCounts.special) parts.push('tapped the special heart ' + tapCounts.special + 'x \uD83D\uDC97');
       if(!parts.length) return;
       tapCounts.heart = 0; tapCounts.hug = 0; tapCounts.kiss = 0; tapCounts.special = 0;
       sendPing('Cheens ' + parts.join(' and ') + '!');
@@ -527,10 +527,10 @@
   }
   const kissMsgs = [
     'mwah! \uD83D\uDC8B',
-    'opucccccheeeeee \uD83D\uDC8B\uD83D\uDC8B',
-    'Lip Lockk \uD83D\uDE33',
-    'Love uuuu \uD83D\uDC8B\u2708\uFE0F',
-    'mmmmmmmmmmmm \u221E\uD83D\uDC8B'
+    'okay one more \uD83D\uDC8B\uD83D\uDC8B',
+    'AYUSH BEHAVE \uD83D\uDE33',
+    'kisses jam-packed and couriered \uD83D\uDC8B\u2708\uFE0F',
+    'unlimited kisses unlocked \u221E\uD83D\uDC8B'
   ];
   let kisses = 0;
   // ----- something special page -----
@@ -545,7 +545,7 @@
     specialPage.classList.remove('show');
     specialPage.setAttribute('aria-hidden','true');
   });
-  const loveSeq = ['Yahhh', 'Yesss', 'Woooaaahhhh', 'Slurp ittttt All in Mouth Go Onnn'];
+  const loveSeq = ['love u', 'love u 2', 'love 3', 'love you all'];
   let loveTaps = 0;
   function spawnLoveText(x, y, text){
     const t = document.createElement('span');
@@ -562,7 +562,7 @@
     loveTaps++;
     spawnLoveText(e.clientX, e.clientY, msg);
     spawnHearts(e.clientX, e.clientY, 6);
-    if(loveTaps === 1) notify('special');
+    notify('special');
   });
 
   document.getElementById('kissBtn').addEventListener('click', e=>{
