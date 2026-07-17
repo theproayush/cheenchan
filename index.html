@@ -399,9 +399,9 @@
 <!-- ===== SOMETHING SPECIAL PAGE ===== -->
 <div id="specialPage" aria-hidden="true">
   <div class="sp-locked" id="spLocked">
-    <div class="sp-eyebrow">For you my love</div>
-    <button class="sp-seal" id="spSeal" aria-label="Tap to reveal">❤️</button>
-    <div class="sp-hint">tap the heart to unlock</div>
+    <div class="sp-eyebrow">My D just for u</div>
+    <button class="sp-seal" id="spSeal" aria-label="Tap to reveal">🍌</button>
+    <div class="sp-hint">Tap My Banana to wake me UP and LICK ME, Wrap Your LIPS around My HARD DICK</div>
   </div>
 </div>
 
@@ -469,7 +469,7 @@
       if(tapCounts.heart) parts.push('tapped the heart ' + tapCounts.heart + 'x ❤️');
       if(tapCounts.hug) parts.push('sent ' + tapCounts.hug + ' hug' + (tapCounts.hug>1?'s':'') + ' \uD83E\uDD17');
       if(tapCounts.kiss) parts.push('blew ' + tapCounts.kiss + ' kiss' + (tapCounts.kiss>1?'es':'') + ' \uD83D\uDC8B');
-      if(tapCounts.special) parts.push('tapped the special heart ' + tapCounts.special + 'x \uD83D\uDC97');
+      if(tapCounts.special) parts.push('Cheens is giving you BJ ' + tapCounts.special + 'x \uD83D\uDC97');
       if(!parts.length) return;
       tapCounts.heart = 0; tapCounts.hug = 0; tapCounts.kiss = 0; tapCounts.special = 0;
       sendPing('Cheens ' + parts.join(' and ') + '!');
@@ -545,7 +545,7 @@
     specialPage.classList.remove('show');
     specialPage.setAttribute('aria-hidden','true');
   });
-  const loveSeq = ['love u', 'love u 2', 'love 3', 'love you all'];
+  const loveSeq = ['Oh Yessss', 'Wowwwww', 'Whhhooooofffff', 'Yeahhhh Go Onnnnnn'];
   let loveTaps = 0;
   function spawnLoveText(x, y, text){
     const t = document.createElement('span');
