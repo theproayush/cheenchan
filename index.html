@@ -245,7 +245,47 @@
   }
   .hug-btn:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(222,49,99,.45)}
   .hug-btn:active{transform:scale(.96)}
+  .btn-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .btn-row .hug-btn{margin-top:0}
+  .kiss-btn{background:linear-gradient(135deg,var(--raspberry),#B01F52)}
   .hug-count{margin-top:14px;font-family:'Caveat',cursive;font-size:1.4rem;color:#A64467;min-height:1.6em}
+  .special-btn{
+    margin-top:22px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#8E2450,var(--berry));
+    color:#fff;font-family:'Karla',sans-serif;font-size:1.05rem;
+    padding:16px 34px;border-radius:999px;letter-spacing:.04em;
+    box-shadow:0 12px 26px rgba(110,27,56,.4);
+    transition:transform .2s,box-shadow .2s;
+  }
+  .special-btn:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(110,27,56,.5)}
+  .special-btn:active{transform:scale(.96)}
+  #specialPage{
+    position:fixed;inset:0;z-index:70;
+    display:none;flex-direction:column;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,#3D0F22,#6E1B38);
+    text-align:center;padding:24px;color:#FFD3E0;
+  }
+  #specialPage.show{display:flex}
+  .sp-eyebrow{font-family:'Caveat',cursive;font-size:1.7rem;color:#F58BAD;margin-bottom:26px}
+  .sp-seal{
+    width:110px;height:110px;border-radius:50%;border:none;cursor:pointer;
+    background:radial-gradient(circle at 35% 30%,#F06292,var(--raspberry));
+    font-size:3rem;line-height:1;color:#fff;
+    box-shadow:0 10px 30px rgba(222,49,99,.5);
+    animation:sealPulse2 1.6s infinite;
+  }
+  @keyframes sealPulse2{
+    0%{box-shadow:0 0 0 0 rgba(245,139,173,.5)}
+    50%{box-shadow:0 0 0 26px rgba(245,139,173,0)}
+    100%{box-shadow:0 0 0 0 rgba(245,139,173,0)}
+  }
+  .sp-hint{margin-top:22px;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;color:#F58BAD}
+  .ftext{
+    position:fixed;z-index:80;pointer-events:none;user-select:none;
+    font-family:'Caveat',cursive;font-weight:700;color:#FFD3E0;
+    text-shadow:0 2px 12px rgba(0,0,0,.35);
+    animation:floatUp 1.8s ease-out forwards;
+  }
   footer{
     text-align:center;margin-top:70px;font-family:'Caveat',cursive;
     font-size:1.35rem;color:#B4577A;
@@ -345,12 +385,25 @@
   <!-- ===== FINALE ===== -->
   <section class="finale">
     <h2>MISHHHINGG UUUU</h2>
-    <button class="hug-btn" id="hugBtn">Send me a hug 🤗</button>
+    <div class="btn-row">
+      <button class="hug-btn" id="hugBtn">Send me a hug 🤗</button>
+      <button class="hug-btn kiss-btn" id="kissBtn">Send me a kiss 💋</button>
+    </div>
     <p class="hug-count" id="hugCount"></p>
+    <button class="special-btn" id="specialBtn"><strong>Something Speciallll</strong> 😉</button>
   </section>
 
   <footer>Hottieee ♥</footer>
 </main>
+
+<!-- ===== SOMETHING SPECIAL PAGE ===== -->
+<div id="specialPage" aria-hidden="true">
+  <div class="sp-locked" id="spLocked">
+    <div class="sp-eyebrow">For you my love</div>
+    <button class="sp-seal" id="spSeal" aria-label="Tap to reveal">❤️</button>
+    <div class="sp-hint">tap the heart to unlock</div>
+  </div>
+</div>
 
 <script>
   // ----- envelope intro -----
@@ -388,7 +441,7 @@
 
   // ----- secret notifications to Ayush via ntfy.sh -----
   const NTFY_TOPIC = 'cheens-love-93e38110';
-  const tapCounts = { heart: 0, hug: 0 };
+  const tapCounts = { heart: 0, hug: 0, kiss: 0, special: 0 };
   let notifyTimer = null;
   let firstPingSent = false;
   function sendPing(msg){
@@ -404,18 +457,21 @@
     // first tap of the visit pings instantly, so a quick tap-and-close still reaches you
     if(!firstPingSent){
       firstPingSent = true;
-      sendPing(kind === 'heart' ? 'Cheens tapped the heart! \u2764\uFE0F' : 'Cheens sent a hug! \uD83E\uDD17');
-      tapCounts.heart = 0; tapCounts.hug = 0;
+      const firstMsgs = { heart: 'Cheens tapped the heart! ❤️', hug: 'Cheens sent a hug! \uD83E\uDD17', kiss: 'Cheens sent you a kiss! \uD83D\uDC8B' };
+      sendPing(firstMsgs[kind]);
+      tapCounts.heart = 0; tapCounts.hug = 0; tapCounts.kiss = 0; tapCounts.special = 0;
       return;
     }
     // further taps are batched: send a summary 4s after she stops
     clearTimeout(notifyTimer);
     notifyTimer = setTimeout(()=>{
       const parts = [];
-      if(tapCounts.heart) parts.push('tapped the heart ' + tapCounts.heart + 'x \u2764\uFE0F');
+      if(tapCounts.heart) parts.push('tapped the heart ' + tapCounts.heart + 'x ❤️');
       if(tapCounts.hug) parts.push('sent ' + tapCounts.hug + ' hug' + (tapCounts.hug>1?'s':'') + ' \uD83E\uDD17');
+      if(tapCounts.kiss) parts.push('blew ' + tapCounts.kiss + ' kiss' + (tapCounts.kiss>1?'es':'') + ' \uD83D\uDC8B');
+      if(tapCounts.special) parts.push('opened Something Special \uD83D\uDE09');
       if(!parts.length) return;
-      tapCounts.heart = 0; tapCounts.hug = 0;
+      tapCounts.heart = 0; tapCounts.hug = 0; tapCounts.kiss = 0; tapCounts.special = 0;
       sendPing('Cheens ' + parts.join(' and ') + '!');
     }, 4000);
   }
@@ -452,6 +508,68 @@
     notify('hug');
     document.getElementById('hugCount').textContent = hugMsgs[Math.min(hugs-1, hugMsgs.length-1)];
     spawnHearts(e.clientX, e.clientY, 10);
+  });
+
+  // ----- kiss button -----
+  const KISSES = ['\uD83D\uDC8B','\uD83D\uDC8B','\uD83D\uDC95','\uD83D\uDC96'];
+  function spawnKisses(x, y, n){
+    for(let i=0;i<n;i++){
+      const k = document.createElement('span');
+      k.className = 'fheart';
+      k.textContent = KISSES[Math.floor(Math.random()*KISSES.length)];
+      k.style.left = (x + (Math.random()*80-40)) + 'px';
+      k.style.top  = (y + (Math.random()*24-12)) + 'px';
+      k.style.fontSize = (18 + Math.random()*24) + 'px';
+      k.style.animationDelay = (Math.random()*0.25)+'s';
+      document.body.appendChild(k);
+      setTimeout(()=>k.remove(), 2100);
+    }
+  }
+  const kissMsgs = [
+    'mwah! \uD83D\uDC8B',
+    'okay one more \uD83D\uDC8B\uD83D\uDC8B',
+    'AYUSH BEHAVE \uD83D\uDE33',
+    'kisses jam-packed and couriered \uD83D\uDC8B\u2708\uFE0F',
+    'unlimited kisses unlocked \u221E\uD83D\uDC8B'
+  ];
+  let kisses = 0;
+  // ----- something special page -----
+  const specialPage = document.getElementById('specialPage');
+  document.getElementById('specialBtn').addEventListener('click', ()=>{
+    specialPage.classList.add('show');
+    specialPage.setAttribute('aria-hidden','false');
+    history.pushState({special:true}, '');
+  });
+  // phone/browser back button closes the special page
+  window.addEventListener('popstate', ()=>{
+    specialPage.classList.remove('show');
+    specialPage.setAttribute('aria-hidden','true');
+  });
+  const loveSeq = ['love u', 'love u 2', 'love 3', 'love you all'];
+  let loveTaps = 0;
+  function spawnLoveText(x, y, text){
+    const t = document.createElement('span');
+    t.className = 'ftext';
+    t.textContent = text;
+    t.style.left = (x - 40 + (Math.random()*60-30)) + 'px';
+    t.style.top = (y - 20) + 'px';
+    t.style.fontSize = (26 + Math.random()*14) + 'px';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 2200);
+  }
+  document.getElementById('spSeal').addEventListener('click', e=>{
+    const msg = loveSeq[Math.min(loveTaps, loveSeq.length-1)];
+    loveTaps++;
+    spawnLoveText(e.clientX, e.clientY, msg);
+    spawnHearts(e.clientX, e.clientY, 6);
+    if(loveTaps === 1) notify('special');
+  });
+
+  document.getElementById('kissBtn').addEventListener('click', e=>{
+    kisses++;
+    notify('kiss');
+    document.getElementById('hugCount').textContent = kissMsgs[Math.min(kisses-1, kissMsgs.length-1)];
+    spawnKisses(e.clientX, e.clientY, 12);
   });
 </script>
 </body>
